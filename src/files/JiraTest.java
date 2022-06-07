@@ -2,6 +2,7 @@ package files;
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
 import io.restassured.path.json.JsonPath;
+import org.testng.Assert;
 
 import java.io.File;
 
@@ -15,11 +16,11 @@ public class JiraTest {
                 body("{\"username\":\"bpechersky@gmail.com\",\"password\":\"Budman1967\"}")
                         .filter(session).
                 when().post("/rest/auth/1/session").then().log().all().extract().response().asString();
-
+        String expectedMessage = "HI, How are you!";
 
         //Adding comment
         String addCommentResponse = given().log().all().pathParam("id","10009").header("Content-Type","application/json").body("{\n" +
-                "    \"body\": \"Adding third comment\",\n" +
+                "    \"body\": \""+expectedMessage+"\",\n" +
                 "    \"visibility\": {\n" +
                 "        \"type\": \"role\",\n" +
                 "        \"value\": \"Administrators\"\n" +
@@ -46,7 +47,9 @@ public class JiraTest {
             String commentIdIssue = js1.get("fields.comment.comments["+i+"].id").toString();
             if(commentIdIssue.equals(commentId))
             {
-                
+                String message = js1.get("fields.comment.comments["+i+"].body").toString();
+                System.out.println(message);
+                Assert.assertEquals(message,expectedMessage);
             }
         }
     }
