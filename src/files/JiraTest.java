@@ -12,7 +12,7 @@ public class JiraTest {
         RestAssured.baseURI = "http://localhost:8080";
      //Login scenario to get session cookie necessary to create new issue
         SessionFilter session = new SessionFilter();
-        String response = given().log().all().header("Content-Type","application/json").
+        String response = given().log().all().relaxedHTTPSValidation().header("Content-Type","application/json").
                 body("{\"username\":\"bpechersky@gmail.com\",\"password\":\"Budman1967\"}")
                         .filter(session).
                 when().post("/rest/auth/1/session").then().log().all().extract().response().asString();
